@@ -33,11 +33,14 @@ def add_expense():
 @app.route('/expenses')
 def show_expenses():
      expenses = Expense.query.all()
-     result = [
-          {'Amount': e.amount, 'Category': e.category}
-          for e in expenses
-     ]
-     return {'expenses': result}
+     return render_template('expenses.html', expenses=expenses)
+
+@app.route('/delete-expense/<int:id>', methods=['POST'])
+def delete_expense(id):
+     expense = Expense.query.get_or_404(id)
+     db.session.delete(expense)
+     db.session.commit()
+     return redirect('/expenses')
 
 if __name__=='__main__':
      with app.app_context():

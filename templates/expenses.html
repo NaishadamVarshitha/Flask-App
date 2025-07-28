@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ALl Expenses</title>
+        <style>
+            table {
+                width: 50%;
+                margin: auto;
+                border-collapse: collapse;
+                margin-top: 50px;
+            }
+            th, td{
+                padding: 10px;
+                border: 1px solid #ccc;
+                text-align: center;
+            }
+            h1{
+                text-align: center;
+                margin-top: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>All Expenses</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Category</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{expense.amount}}</td>
+                <td>{{expense.category}}</td>
+                <td>
+                    <form action="/delete-expense/{{expense.id}}" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
