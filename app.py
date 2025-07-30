@@ -30,6 +30,16 @@ def add_expense():
          return "Expense added ✅"
     return render_template('add_expense.html')
 
+@app.route('/edit-expense/<int:id>' , methods=['GET', 'POST'])
+def edit_expense(id):
+     expense = Expense.query.get_or_404(id)
+     if request.method == 'POST':
+          expense.amount = float(request.form.get('amount'))
+          expense.category = request.form.get('category')
+          db.session.commit()
+          return redirect('/expenses')
+     return render_template('edit_expense.html' , expense=expense)
+
 @app.route('/expenses')
 def show_expenses():
      expenses = Expense.query.all()

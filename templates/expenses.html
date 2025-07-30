@@ -38,6 +38,7 @@
                     <form action="/delete-expense/{{expense.id}}" method="POST" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
+                <a href="edit-expense/{{expense.id}}">Edit</a>
                 </td>
             </tr>
             {% endfor %}
