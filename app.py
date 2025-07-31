@@ -40,10 +40,16 @@ def edit_expense(id):
           return redirect('/expenses')
      return render_template('edit_expense.html' , expense=expense)
 
-@app.route('/expenses')
+@app.route('/expenses', methods=['GET','POST'])
 def show_expenses():
-     expenses = Expense.query.all()
-     return render_template('expenses.html', expenses=expenses)
+     search_term=request.form.get('search') if request.method=='POST' else ''
+
+     if search_term:
+          expenses=Expense.query.filter(Expense.category.ilike(f'%{search_term}%')).all()
+     else:
+          expenses = Expense.query.all()
+     
+     return render_template('expenses.html', expenses=expenses, search_term=search_term)
 
 @app.route('/delete-expense/<int:id>', methods=['POST'])
 def delete_expense(id):

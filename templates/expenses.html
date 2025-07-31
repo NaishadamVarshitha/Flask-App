@@ -22,6 +22,10 @@
     </head>
     <body>
         <h1>All Expenses</h1>
+        <form method="POST" style="text-align:center; margin-top:20px;">
+            <input type="text" name="search" placeholder="Search by category" value="{{ search_term or ''}}">
+            <button type="submit">Search</button> 
+        </form>
         <table>
             <thead>
             <tr>
