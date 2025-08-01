@@ -31,6 +31,8 @@
             <tr>
                 <th>Amount</th>
                 <th>Category</th>
+                <th>Date</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -38,6 +40,7 @@
             <tr>
                 <td>{{expense.amount}}</td>
                 <td>{{expense.category}}</td>
+                <td>{{ expense.date.strftime('%d/%m/%Y')}}</td>
                 <td>
                     <form action="/delete-expense/{{expense.id}}" method="POST" style="display:inline;">
                     <button type="submit">Delete</button>

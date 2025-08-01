@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect
+from datetime import datetime
+from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 import os
 app= Flask(__name__)
@@ -13,6 +15,7 @@ class Expense(db.Model):
      id = db.Column(db.Integer, primary_key=True)
      amount = db.Column(db.Float, nullable=False)
      category = db.Column(db.String(100), nullable =False)
+     date = db.Column(db.Date, nullable=False)#new fiels
 expenses=[]
 
 @app.route('/')
@@ -24,7 +27,10 @@ def add_expense():
     if request.method =='POST':
          amount = float(request.form.get('amount'))
          category = request.form.get('category')
-         new_expense = Expense(amount=amount, category=category)
+         date_str = request.form.get('date')
+         date_obj= datetime.strptime(date_str, '%Y-%m-%d').date()
+         
+         new_expense = Expense(amount=amount, category=category, date=date_obj)
          db.session.add(new_expense)
          db.session.commit()
          return "Expense added ✅"
