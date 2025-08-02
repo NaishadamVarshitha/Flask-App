@@ -3,29 +3,47 @@
     <head>
         <title>ALl Expenses</title>
         <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            form{
+                text-align:center;
+                margin-top: 30px;
+            }
+            input{
+                margin: 5px;
+                padding: 5px;
+            }
+
             table {
-                width: 50%;
-                margin: auto;
+                width: 60%;
+                margin: 30px auto;
                 border-collapse: collapse;
-                margin-top: 50px;
             }
             th, td{
                 padding: 10px;
                 border: 1px solid #ccc;
                 text-align: center;
             }
-            h1{
-                text-align: center;
-                margin-top: 30px;
+            .delete-btn{
+                padding: 4px 10px;
             }
         </style>
     </head>
     <body>
         <h1>All Expenses</h1>
-        <form method="POST" style="text-align:center; margin-top:20px;">
-            <input type="text" name="search" placeholder="Search by category" value="{{ search_term or ''}}">
-            <button type="submit">Search</button> 
+
+        <form method="GET">
+            Category:
+            <input type="'text" name="category" value="{{ category or ''}}" placeholder="e.g. food">
+            Start Date:
+            <input type="date" name="start_date" value="{{ start_date or''}}">
+            End Date:
+            <input type="date" name="end_date" value="{{ end_date or ''}}">
+            <input type="submit" value="Filter">
         </form>
+       
+        <h2>Total:₹{{ total_amount }}</h2>
         <table>
             <thead>
             <tr>
@@ -43,7 +61,7 @@
                 <td>{{ expense.date.strftime('%d/%m/%Y')}}</td>
                 <td>
                     <form action="/delete-expense/{{expense.id}}" method="POST" style="display:inline;">
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="delete-btn">Delete</button>
                 </form>
                 <a href="edit-expense/{{expense.id}}">Edit</a>
                 </td>

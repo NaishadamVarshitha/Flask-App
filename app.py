@@ -46,16 +46,36 @@ def edit_expense(id):
           return redirect('/expenses')
      return render_template('edit_expense.html' , expense=expense)
 
-@app.route('/expenses', methods=['GET','POST'])
+@app.route('/expenses', methods=['GET'])
 def show_expenses():
-     search_term=request.form.get('search') if request.method=='POST' else ''
+     category = request.args.get('category', '')
+     start_date = request.args.get('start_date')
+     end_date = request.args.get('end_date')
 
-     if search_term:
-          expenses=Expense.query.filter(Expense.category.ilike(f'%{search_term}%')).all()
-     else:
-          expenses = Expense.query.all()
-     
-     return render_template('expenses.html', expenses=expenses, search_term=search_term)
+     query=Expense.query
+
+     if category:
+          query = query.filter(Expense.category.ilike(f'%{category}%'))
+
+     if start_date:
+          try:
+               start =datetime.strptime(start_date, '%Y-%m-%d').date()
+               query =query.filter(Expense.date >=start)
+          except ValueError:
+               pass
+     if end_date:
+          try:
+               end = datetime.strptime(end_date, '%Y-%m-%d').date()
+               query = query.filter(Expense.date <=end)
+          except ValueError:
+               pass
+
+     expenses = query.all()
+     total_amount = sum(exp.amount for exp in expenses)
+
+     return render_template('expenses.html', expenses=expenses, category=category, start_date=start_date, end_date=end_date, total_amount=total_amount)
+   
+    
 
 @app.route('/delete-expense/<int:id>', methods=['POST'])
 def delete_expense(id):
