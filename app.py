@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect
 from datetime import datetime
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
+
 import os
 app= Flask(__name__)
 basedir =os.path.abspath(os.path.dirname(__file__))
@@ -83,6 +85,17 @@ def delete_expense(id):
      db.session.delete(expense)
      db.session.commit()
      return redirect('/expenses')
+
+@app.route('/summary')
+def summary():
+     total_expense = db.session.query(func.sum(Expense.amount)).scalar() or 0
+
+     category_summary = db.session.query(
+          Expense.category,
+          func.sum(Expense.amount)
+     ).group_by(Expense.category).all()
+
+     return render_template('summary.html', total_expense=total_expense, category_summary=category_summary)
 
 if __name__=='__main__':
      with app.app_context():
