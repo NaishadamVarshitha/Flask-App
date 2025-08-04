@@ -20,6 +20,11 @@ class Expense(db.Model):
      date = db.Column(db.Date, nullable=False)#new fiels
 expenses=[]
 
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%B %Y'):
+     date_obj = datetime.strptime(value, '%Y-%m')
+     return date_obj.strftime(format)
+
 @app.route('/')
 def index():
      return redirect('/add-expense')
@@ -35,7 +40,14 @@ def add_expense():
          new_expense = Expense(amount=amount, category=category, date=date_obj)
          db.session.add(new_expense)
          db.session.commit()
-         return "Expense added ✅"
+         return'''
+              <p>"Expense added ✅"</p>
+              <p><a href="/add-expense"> Add another expense</a></p>
+              <p><a href="expenses">View all expenses</a></p>
+              <p><a href="/summary">View summary</a></p>
+              ''' 
+          
+             
     return render_template('add_expense.html')
 
 @app.route('/edit-expense/<int:id>' , methods=['GET', 'POST'])
@@ -95,7 +107,14 @@ def summary():
           func.sum(Expense.amount)
      ).group_by(Expense.category).all()
 
-     return render_template('summary.html', total_expense=total_expense, category_summary=category_summary)
+     #month wise summary
+     month_summary = db.session.query(
+          func.strftime('%Y-%m', Expense.date),
+          func.sum(Expense.amount)
+          ).group_by(func.strftime('%Y-%m', Expense.date)).all()
+     
+     return render_template('summary.html', total_expense=total_expense, category_summary=category_summary,month_summary=month_summary)
+
 
 if __name__=='__main__':
      with app.app_context():

@@ -28,5 +28,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        <h2>Month-wise Summary</h2>
+        <ul>
+            {% for month, total in month_summary %}
+            <li>{{ month | datetimeformat('%B %Y')}}-{{ '%.2f'|format(total)}}</li>
+            {% endfor %}
+        </ul>
     </body>
 </html>
