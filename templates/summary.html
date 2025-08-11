@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Summary</title>
-            <style>
-                body{ text-align:center; font-family:Arial, sans-serfic;}
-                table { margin:auto; margin-top: 30px; border-collapse:collapse;}
-                th, td {padding:10px; border:1px solid #ccc;}
-            </style>
-    </head>
-    <body>
-        <h1>Expenses Summary</h1>
-        <h2>Total Spent: ₹{{ total_expense }}</h2>
+<head>
+    <title>Expenses Summary</title>
+    <style>
+        body { 
+            text-align: center; 
+            font-family: Arial, sans-serif;
+        }
+        table { 
+            margin: auto; 
+            margin-top: 30px; 
+            border-collapse: collapse;
+        }
+        th, td { 
+            padding: 10px; 
+            border: 1px solid #ccc;
+        }
+    </style>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+
+<body>
+    <h1>Expenses Summary</h1>
+    <p><strong>Total income:</strong> {{ total_income | currency}}</p>
+    <p><strong>Total Expenses:</strong> {{ total_expense | currency }}</p>
+    <p><strong>Current Savings:</strong> {{ savings | currency }}</p>
+
+    <!-- Flex container for table and pie chart -->
+    <div style="display: flex; justify-content: center; gap: 40px; align-items: flex-start; margin-top: 30px;">
+        <!-- Category-wise table -->
         <table>
             <thead>
                 <tr>
@@ -28,11 +48,56 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h2>Month-wise Summary</h2>
-        <ul>
-            {% for month, total in month_summary %}
-            <li>{{ month | datetimeformat('%B %Y')}}-{{ '%.2f'|format(total)}}</li>
-            {% endfor %}
-        </ul>
-    </body>
+
+        <!-- Pie chart -->
+        <div>
+            <h3>Category-wise Expense</h3>
+            <canvas id="expensePieChart" width="200" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Month-wise summary -->
+    <h2 style="margin-top: 40px;">Month-wise Summary</h2>
+    <ul>
+        {% for month, total in month_summary %}
+        <li>{{ month | datetimeformat('%B %Y') }} - ₹{{ '%.2f'|format(total) }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pie chart script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const categoryData = {{ category_summary | tojson }};
+        const labels = categoryData.map(item => item[0]);
+        const data = categoryData.map(item => item[1]);
+
+        const ctx = document.getElementById('expensePieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        '#ff6384', '#36a2eb', '#ffce56',
+                        '#4bc0c0', '#9966ff', '#ff9f40', '#8bc34a'
+                    ]
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+
 </html>

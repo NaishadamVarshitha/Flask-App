@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}MY APP{% endblock %}</title>
+        <style>
+            #flash-message {
+                background-color: #d4edda;
+                color:#155724;
+                padding: 10px;
+                border-radius:5px;
+                margin-bottom:10px;
+            }
+        </style>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+           {% if messages %}
+            <div id="flash-message">
+                {{ messages[0]}}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+        <script>
+            setTimeout(function(){
+                let flash = document.getElementById('flash-message');
+                if (flash) flash.style.display = 'none';
+            }, 3000);
+        </script>
+    </body>
+</html>

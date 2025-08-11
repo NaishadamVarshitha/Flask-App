@@ -2,11 +2,17 @@
 <html>
     <head><title>Add Expense</title></head>
     <body>
+        {% extends "base.html" %}
+
+        {% block title %}Add Expense{% endblock %}
+
+         {% block content %}
         <form method="POST">
             Amount:<input type="text" name="amount"><br>
             Category:<input type="text" name="category"><br>
-            Date:<input type="date" name="date"><br><!--New date input-->
+            Date:<input type="date" name="date" required><br><!--New date input-->
             <input type="submit" value="Submit">
         </form>
+     {% endblock %}   
     </body>
 </html>
